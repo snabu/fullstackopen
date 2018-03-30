@@ -1,0 +1,11 @@
+User -> Browser:
+note left of Browser: 
+    User creates new message and clicks "Talleta"
+end Note
+note left of Browser: 
+    spa.js add new note to notes array, redraws
+    notes and POSTs created note to server
+end Note
+
+Browser -> Server:POST https://fullstack-exampleapp.herokuapp.com/new_note_spa\npayload {content, date}
+Server --> Browser: Status 201, {"message":"note created"}

@@ -1,0 +1,23 @@
+User -> Browser:
+note left of Browser: 
+    User creates new message and clicks "Talleta"
+end Note
+Browser -> Server: POST https://fullstack-exampleapp.herokuapp.com/new_note\nwith new message as form data 
+
+Server --> Browser: Status 302, with redirect to /notes
+Browser -> Server: GET https://fullstack-exampleapp.herokuapp.com/notes
+Server --> Browser: Status 200, page HTML
+Browser -> Server: GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server --> Browser: Status 200, main.css
+Browser -> Server: GET https://fullstack-exampleapp.herokuapp.com/main.js
+Server --> Browser: Status 200, main.js
+note left of Browser: 
+    Execute main.js, 
+    Send AJAX request to Server
+end note
+Browser -> Server: GET https://fullstack-exampleapp.herokuapp.com/data.json
+Server --> Browser: Status 200, data.json
+note left of Browser
+    Populate message list with messages
+    Browser displays HTML with messages
+end note

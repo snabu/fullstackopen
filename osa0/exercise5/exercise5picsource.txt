@@ -1,0 +1,22 @@
+User -> Browser:
+note left of Browser: 
+    User navigates to 
+    https://fullstack-exampleapp.herokuapp.com/spa
+end Note
+Browser -> Server: GET https://fullstack-exampleapp.herokuapp.com/spa
+Server --> Browser: Status 200, spa HTML
+Browser -> Server: GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server --> Browser: Status 200, main.css
+Browser -> Server: GET https://fullstack-exampleapp.herokuapp.com/spa.js
+Server --> Browser: Status 200, spa.js
+note left of Browser: 
+    Execute spa.js, 
+    Send AJAX request to Server
+end note
+Browser -> Server: https://fullstack-exampleapp.herokuapp.com/data.json
+Server --> Browser: Status 200, data.json
+note left of Browser
+    spa.js creates list items based on data.json\n and adds to HTML document 
+    Browser displays HTML with messages
+end note
+
