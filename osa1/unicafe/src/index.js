@@ -46,7 +46,12 @@ class App extends React.Component {
 }
 
 const Statistic = (props) => {
-   return ( <p>{props.text} {props.value}</p>)
+    return (
+        <tr>
+            <td>{props.text}</td>
+            <td>{props.value}</td>
+        </tr>
+    )
 }
 
 const Button = ({ handleClick, text }) => (
@@ -68,13 +73,15 @@ const Statistics = ({good, neutral, bad, total}) => {
         return (<div>ei yhtään palautetta annettu</div>)
 
     else return (
-        <div>
-            <Statistic text = {"hyvä"} value = {good}/>
-            <Statistic text = {"neutraali"} value = {neutral}/>
-            <Statistic text = {"huono"} value = {bad}/>
-            <Statistic text = {"keskiarvo"} value ={mean()} />
-            <Statistic text = {"positiivisia"} value = {positives() + "%"}/>
-        </div>
+        <table>
+            <tbody>
+                <Statistic text = {"hyvä"} value = {good}/>
+                <Statistic text = {"neutraali"} value = {neutral}/>
+                <Statistic text = {"huono"} value = {bad}/>
+                <Statistic text = {"keskiarvo"} value ={mean()} />
+                <Statistic text = {"positiivisia"} value = {positives() + " %"}/>
+            </tbody>
+        </table>
     )
 }
 
