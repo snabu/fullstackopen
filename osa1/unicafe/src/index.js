@@ -17,7 +17,15 @@ class App extends React.Component {
     }
 
     render() {
+
+        const mean = () =>  {
+            if (this.state.total === 0) {
+                return 0
+            }
+            return (this.state.good + this.state.bad * -1)/this.state.total
+        }
         return (
+
             <div>
                 <h1>anna palautetta</h1>
                 <button onClick={() => {this.setState({good: this.state.good + 1, total: this.state.total +1})}}>
@@ -33,9 +41,13 @@ class App extends React.Component {
                 <p>Hyvä {this.state.good}</p>
                 <p>Neutraali {this.state.neutral}</p>
                 <p>Huono {this.state.bad}</p>
+                <p>Keskiarvo {mean()}</p>
             </div>
         )
     }
+
+
+
 }
 
 
