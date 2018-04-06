@@ -3,24 +3,26 @@ import ReactDOM from 'react-dom'
 
 const App = () => {
     const kurssi = 'Half Stack -sovelluskehitys'
-    const osa1 = {
-        nimi: 'Reactin perusteet',
-        tehtavia: 10
-    }
-    const osa2 = {
-        nimi: 'Tiedonvälitys propseilla',
-        tehtavia: 7
-    }
-    const osa3 = {
-        nimi: 'Komponenttien tila',
-        tehtavia: 14
-    }
+    const osat = [
+        {
+            nimi: 'Reactin perusteet',
+            tehtavia: 10
+        },
+        {
+            nimi: 'Tiedonvälitys propseilla',
+            tehtavia: 7
+        },
+        {
+            nimi: 'Komponenttien tila',
+            tehtavia: 14
+        }
+    ]
 
     return (
         <div>
             <Otsikko kurssi={kurssi} />
-            <Sisalto osa1={osa1} osa2={osa2} osa3={osa3} />
-            <Yhteensa yhteensa={osa1.tehtavia + osa2.tehtavia + osa3.tehtavia}/>
+            <Sisalto osat={osat}/>
+            <Yhteensa osat={osat}/>
         </div>
 )
 
@@ -35,9 +37,10 @@ const Otsikko = (props) => {
 const Sisalto = (props) => {
     return (
         <div>
-            <Osa osa={props.osa1}/>
-            <Osa osa={props.osa2}/>
-            <Osa osa={props.osa3}/>
+            {props.osat.map(function(osa, index) {
+                console.log("osa on", osa)
+                return <Osa osa={osa} key={index}/>
+            })}
         </div>
         )
     }
@@ -50,8 +53,13 @@ const Osa = (props) => {
 }
 
 const Yhteensa = (props) => {
+    let yhteensa=0;
+    props.osat.map(function (osa, index) {
+         yhteensa += osa.tehtavia
+        return yhteensa
+    })
     return(
-    <p>yhteensä {props.yhteensa} tehtävää</p>
+    <p>yhteensä {yhteensa} tehtävää</p>
     )
 }
 
