@@ -24,6 +24,13 @@ class App extends React.Component {
             }
             return (this.state.good + this.state.bad * -1)/this.state.total
         }
+
+        const positives = () => {
+            if (this.state.total === 0) {
+                return 0
+            }
+            return (this.state.good/this.state.total * 100)
+        }
         return (
 
             <div>
@@ -42,6 +49,7 @@ class App extends React.Component {
                 <p>Neutraali {this.state.neutral}</p>
                 <p>Huono {this.state.bad}</p>
                 <p>Keskiarvo {mean()}</p>
+                <p>Positiivisia {positives()}%</p>
             </div>
         )
     }
