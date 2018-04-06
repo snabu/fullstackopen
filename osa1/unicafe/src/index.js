@@ -57,21 +57,17 @@ const Button = ({ handleClick, text }) => (
 
 const Statistics = ({good, neutral, bad, total}) => {
     const mean = () =>  {
-        console.log (total)
-        if (total === 0) {
-            return 0
-        }
         return (good + bad * -1)/total
     }
 
     const positives = () => {
-        if (total === 0) {
-            return 0
-        }
         return (good/total * 100)
     }
 
-    return (
+    if (total === 0)
+        return (<div>ei yhtään palautetta annettu</div>)
+
+    else return (
         <div>
             <Statistic text = {"hyvä"} value = {good}/>
             <Statistic text = {"neutraali"} value = {neutral}/>
