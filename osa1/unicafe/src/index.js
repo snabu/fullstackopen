@@ -1,3 +1,4 @@
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 
@@ -16,40 +17,26 @@ class App extends React.Component {
         }
     }
 
+
+    handleClick = (event) => {
+        console.log(event)
+        return () => {
+            this.setState({[event] : this.state[event] + 1, total : this.state.total + 1})
+        }
+    }
+
     render() {
 
-        const mean = () =>  {
-            if (this.state.total === 0) {
-                return 0
-            }
-            return (this.state.good + this.state.bad * -1)/this.state.total
-        }
 
-        const positives = () => {
-            if (this.state.total === 0) {
-                return 0
-            }
-            return (this.state.good/this.state.total * 100)
-        }
         return (
 
             <div>
                 <h1>anna palautetta</h1>
-                <button onClick={() => {this.setState({good: this.state.good + 1, total: this.state.total +1})}}>
-                    hyvä
-                </button>
-                <button onClick={() => {this.setState({neutral: this.state.neutral + 1, total: this.state.total +1})}}>
-                    neutraali
-                </button>
-                <button onClick={() => {this.setState({bad: this.state.bad + 1, total: this.state.total +1})}}>
-                    huono
-                </button>
+                <Button handleClick= {this.handleClick("good")} text={"hyvä"}/>
+                <Button handleClick= {this.handleClick("neutral")} text={"neutraali"}/>
+                <Button handleClick= {this.handleClick("bad")} text={"huono"}/>
                 <h1>statistiikka</h1>
-                <p>Hyvä {this.state.good}</p>
-                <p>Neutraali {this.state.neutral}</p>
-                <p>Huono {this.state.bad}</p>
-                <p>Keskiarvo {mean()}</p>
-                <p>Positiivisia {positives()}%</p>
+                <Statistics good={this.state.good} bad={this.state.bad} neutral = {this.state.neutral} total = {this.state.total}/>
             </div>
         )
     }
@@ -58,6 +45,42 @@ class App extends React.Component {
 
 }
 
+const Statistic = (props) => {
+   return ( <p>{props.text} {props.value}</p>)
+}
+
+const Button = ({ handleClick, text }) => (
+    <button onClick={handleClick}>
+        {text}
+    </button>
+)
+
+const Statistics = ({good, neutral, bad, total}) => {
+    const mean = () =>  {
+        console.log (total)
+        if (total === 0) {
+            return 0
+        }
+        return (good + bad * -1)/total
+    }
+
+    const positives = () => {
+        if (total === 0) {
+            return 0
+        }
+        return (good/total * 100)
+    }
+
+    return (
+        <div>
+            <Statistic text = {"hyvä"} value = {good}/>
+            <Statistic text = {"neutraali"} value = {neutral}/>
+            <Statistic text = {"huono"} value = {bad}/>
+            <Statistic text = {"keskiarvo"} value ={mean()} />
+            <Statistic text = {"positiivisia"} value = {positives() + "%"}/>
+        </div>
+    )
+}
 
 
 
