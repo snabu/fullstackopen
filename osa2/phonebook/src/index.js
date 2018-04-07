@@ -17,83 +17,113 @@ class App extends React.Component {
             newNumber: '',
             filter: ''
         }
+
+        this.handleFilterChange = this.handleFilterChange.bind(this)
+        this.addPerson = this.addPerson.bind(this)
+        this.handleNameChange = this.handleNameChange.bind(this)
+        this.handleNumberChange = this.handleNumberChange.bind(this)
     }
 
 
 
     addPerson = (event) => {
-        const guid = () => {
-            const s4 = () => {
-                return Math.floor((1 + Math.random()) * 0x10000)
-                    .toString(16)
-                    .substring(1);
+        const handler = (event) => {
+            const guid = () => {
+                const s4 = () => {
+                    return Math.floor((1 + Math.random()) * 0x10000)
+                        .toString(16)
+                        .substring(1);
+                }
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
             }
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        }
 
-        event.preventDefault()
-        console.log('addPerson')
-        console.log(event.target)
+            event.preventDefault()
+            console.log('addPerson')
+            console.log(event.target)
 
-        if (this.state.persons.filter(person => (person.name.toLowerCase() === this.state.newName.toLowerCase())).length > 0){
-            console.log("nimi on jo luettelossa: ",this.state.newName)
-            alert("Nimi on jo luettelossa")
-            return
+            if (this.state.persons.filter(person => (person.name.toLowerCase() === this.state.newName.toLowerCase())).length > 0) {
+                console.log("nimi on jo luettelossa: ", this.state.newName)
+                alert("Nimi on jo luettelossa")
+                return
+            }
+            const newPerson = {name: this.state.newName, number: this.state.newNumber, id: guid()}
+            const persons = this.state.persons.concat(newPerson)
+            this.setState({persons, newName: '', newNumber: ''})
         }
-        const newPerson = {name: this.state.newName, number: this.state.newNumber, id : guid()}
-        const persons = this.state.persons.concat(newPerson)
-        this.setState({persons, newName: '', newNumber: ''})
+        return handler
     }
 
 
     handleNameChange = (event) => {
-        console.log(event.target.value)
-        this.setState({ newName: event.target.value })
+        const handler = (event) => {
+            console.log(event.target.value)
+            this.setState({newName: event.target.value})
+        }
+        return handler
     }
 
 
     handleNumberChange = (event) => {
-        console.log(event.target.value)
-        this.setState({ newNumber: event.target.value })
+        const handler = (event) => {
+            console.log(event.target.value)
+            this.setState({newNumber: event.target.value})
+        }
+        return handler
     }
 
     handleFilterChange = (event) => {
-        console.log("handleFilterChange ", event.target.value)
+        const handler = (event) =>{
+            console.log("in handleFilterChange")
         this.setState({filter: event.target.value})
+        }
+        return handler
     }
 
     render() {
         return (
             <div>
                 <h2>Puhelinluettelo</h2>
-                <div>
-                    rajaa nätettäviä <input
-                    onChange={this.handleFilterChange}
-                    value={this.state.filter}
-                    />
-                </div>
-                <form onSubmit={this.addPerson}>
-                    <div>
-                        nimi: <input
-                        onChange={this.handleNameChange}
-                        value = {this.state.newName}
-                    />
-                    <div>
-                        numero: <input
-                        onChange = {this.handleNumberChange}
-                        value = {this.state.newNumber}
-                        />
-                    </div>
-                    </div>
-                    <div>
-                        <button type="submit" disabled={!this.state.newName||!this.state.newNumber}>lisää</button>
-                    </div>
-                </form>
+                <Filter handler = {this.handleFilterChange} filter = {this.state.filter}/>
+                <AddPerson nameChangeHandler = {this.handleNameChange} numberChangeHandler = {this.handleNumberChange}
+                           addPerson = {this.addPerson} newName = {this.state.newName} newNumber = {this.state.newNumber}/>
                 <h2>Numerot</h2>
                 <Persons persons = {this.state.persons} filter ={this.state.filter}/>
             </div>
         )
     }
+}
+
+const AddPerson =({nameChangeHandler, numberChangeHandler, addPerson, newName, newNumber}) => {
+    return(
+        <form onSubmit={addPerson()}>
+            <div>
+                nimi: <input
+                onChange={nameChangeHandler()}
+                value = {newName}
+            />
+                <div>
+                    numero: <input
+                    onChange = {numberChangeHandler()}
+                    value = {newNumber}
+                />
+                </div>
+            </div>
+            <div>
+                <button type="submit" disabled={!newName||!newNumber}>lisää</button>
+            </div>
+        </form>
+    )
+}
+
+const Filter = ({filter, handler}) => {
+    return (
+        <div>
+            rajaa näytettäviä <input
+            onChange={handler()}
+            value={filter}
+        />
+        </div>
+    )
 }
 
 
