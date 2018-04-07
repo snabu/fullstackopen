@@ -25,7 +25,7 @@ class App extends React.Component {
     }
 
     handleVoteClick = () => {
-        const newPoints = {...this.state.points}
+        const newPoints = [...this.state.points]
         newPoints[this.state.selected].count +=1
         console.log("Vote clicked, new points are ",newPoints)
         this.setState({points: newPoints})
