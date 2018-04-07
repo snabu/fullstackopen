@@ -10,14 +10,13 @@ class App extends React.Component {
     }
 
     handleClick = () => {
+        console.log("handleClick called")
         let random = 0;
         while ((random = Math.floor(Math.random() * anecdotes.length))===this.state.selected) {
 
         }
 
-        return () => {
-            this.setState({selected : random})
-        }
+        this.setState({selected : random})
     }
 
     render() {
@@ -25,7 +24,7 @@ class App extends React.Component {
 
             <div>
                 <p>{this.props.anecdotes[this.state.selected]}</p>
-                <Button handleClick= {this.handleClick()} text={"random anecdote"}/>
+                <Button handleClick= {this.handleClick} text={"random anecdote"}/>
             </div>
         )
     }
