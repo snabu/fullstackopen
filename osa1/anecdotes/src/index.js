@@ -37,19 +37,47 @@ class App extends React.Component {
 
             <div>
                 <p>{this.props.anecdotes[this.state.selected]}</p>
+                <HasVotes count={this.state.points[this.state.selected].count}/>
                 <Button handleClick= {this.handleClick} text={"random anecdote"}/>
                 <Button handleClick= {this.handleVoteClick} text={"vote"}/>
+                <MostVoted votes = {this.state.points}/>
             </div>
         )
     }
 }
 
 
+const HasVotes = (props) => {
+       return (
+           <p>has {props.count} points </p>
+       )
+}
+
 const Button = ({ handleClick, text }) => (
     <button onClick={handleClick}>
         {text}
     </button>
 )
+
+const MostVoted = (votes) => {
+    const compare =(a,b) =>{
+        if (a.count < b.count)
+            return -1;
+        if (a.count > b.count)
+            return 1;
+        return 0;
+    }
+    const points = [...votes.votes]
+    //sort points ascending based on votes
+    points.sort(compare)
+    return (
+        <div>
+            <h1>anecdote with most votes</h1>
+            <p>{anecdotes[points[points.length -1].anectode]}</p>
+            <HasVotes count={points[points.length -1].count}/>
+        </div>
+    )
+}
 
 const anecdotes = [
     'If it hurts, do it more often',
