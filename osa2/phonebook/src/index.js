@@ -25,9 +25,16 @@ class App extends React.Component {
             }
             return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
         }
+
         event.preventDefault()
         console.log('addPerson')
         console.log(event.target)
+
+        if (this.state.persons.filter(person => (person.name === this.state.newName)).length > 0){
+            console.log("nimi on jo luettelossa",this.state.newName)
+            alert("Nimi on jo luettelossa")
+            return
+        }
         const newPerson = {name: this.state.newName, id : guid()}
         const persons = this.state.persons.concat(newPerson)
         this.setState({persons, newName: ''})
@@ -47,10 +54,11 @@ class App extends React.Component {
                     <div>
                         nimi: <input
                         onChange={this.handleNameChange}
+                        value = {this.state.newName}
                     />
                     </div>
                     <div>
-                        <button type="submit">lisää</button>
+                        <button type="submit" disabled={!this.state.newName}>lisää</button>
                     </div>
                 </form>
                 <h2>Numerot</h2>
