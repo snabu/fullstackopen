@@ -7,10 +7,14 @@ class App extends React.Component {
         super(props)
         this.state = {
             persons: [
-                { name: 'Arto Hellas',
-                id : '9557bbc7-e952-2ad0-2118-44aec6569877'}
+                {
+                    name: 'Arto Hellas',
+                    id: '9557bbc7-e952-2ad0-2118-44aec6569877',
+                    number: '09123456789'
+                }
             ],
-            newName: ''
+            newName: '',
+            newNumber: ''
         }
     }
 
@@ -30,20 +34,26 @@ class App extends React.Component {
         console.log('addPerson')
         console.log(event.target)
 
-        if (this.state.persons.filter(person => (person.name === this.state.newName)).length > 0){
-            console.log("nimi on jo luettelossa",this.state.newName)
+        if (this.state.persons.filter(person => (person.name.toLowerCase() === this.state.newName.toLowerCase())).length > 0){
+            console.log("nimi on jo luettelossa: ",this.state.newName)
             alert("Nimi on jo luettelossa")
             return
         }
-        const newPerson = {name: this.state.newName, id : guid()}
+        const newPerson = {name: this.state.newName, number: this.state.newNumber, id : guid()}
         const persons = this.state.persons.concat(newPerson)
-        this.setState({persons, newName: ''})
+        this.setState({persons, newName: '', newNumber: ''})
     }
 
 
     handleNameChange = (event) => {
         console.log(event.target.value)
         this.setState({ newName: event.target.value })
+    }
+
+
+    handleNumberChange = (event) => {
+        console.log(event.target.value)
+        this.setState({ newNumber: event.target.value })
     }
 
     render() {
@@ -56,9 +66,15 @@ class App extends React.Component {
                         onChange={this.handleNameChange}
                         value = {this.state.newName}
                     />
+                    <div>
+                        numero: <input
+                        onChange = {this.handleNumberChange}
+                        value = {this.state.newNumber}
+                        />
+                    </div>
                     </div>
                     <div>
-                        <button type="submit" disabled={!this.state.newName}>lisää</button>
+                        <button type="submit" disabled={!this.state.newName||!this.state.newNumber}>lisää</button>
                     </div>
                 </form>
                 <h2>Numerot</h2>
@@ -70,7 +86,7 @@ class App extends React.Component {
 
 
 const Persons = ({persons}) => {
-    return (persons.map(person => <p key={person.id}>{person.name}</p>))
+    return (persons.map(person => <p key={person.id}>{person.name} {person.number}</p>))
 }
 
 export default App
