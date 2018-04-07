@@ -1,18 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import axios from 'axios'
 
 class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            persons: [
-                {
-                    name: 'Arto Hellas',
-                    id: '9557bbc7-e952-2ad0-2118-44aec6569877',
-                    number: '09123456789'
-                }
-            ],
+            persons: [],
             newName: '',
             newNumber: '',
             filter: ''
@@ -22,6 +16,16 @@ class App extends React.Component {
         this.addPerson = this.addPerson.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
         this.handleNumberChange = this.handleNumberChange.bind(this)
+    }
+
+    componentWillMount() {
+        console.log('componentWillMount')
+        axios
+            .get('http://localhost:3001/persons')
+            .then(response => {
+                console.log('response received')
+                this.setState({ persons: response.data })
+            })
     }
 
 
