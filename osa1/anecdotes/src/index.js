@@ -5,26 +5,40 @@ class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            selected:  Math.floor(Math.random() * anecdotes.length)
+            selected: Math.floor(Math.random() * anecdotes.length),
+            points: []
+
         }
+        console.log("constructor")
+        for (let i = 0; i < anecdotes.length; i++)
+            this.state.points.push({anectode : i, count : 0})
+        console.log(this.state.points)
     }
 
     handleClick = () => {
-        console.log("handleClick called")
+        console.log("handleclick called")
         let random = 0;
         while ((random = Math.floor(Math.random() * anecdotes.length))===this.state.selected) {
 
         }
-
         this.setState({selected : random})
     }
 
+    handleVoteClick = () => {
+        const newPoints = {...this.state.points}
+        newPoints[this.state.selected].count +=1
+        console.log("Vote clicked, new points are ",newPoints)
+        this.setState({points: newPoints})
+    }
+
     render() {
+        console.log("Rendering, points are ", this.state.points)
         return (
 
             <div>
                 <p>{this.props.anecdotes[this.state.selected]}</p>
                 <Button handleClick= {this.handleClick} text={"random anecdote"}/>
+                <Button handleClick= {this.handleVoteClick} text={"vote"}/>
             </div>
         )
     }
