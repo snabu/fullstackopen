@@ -63,18 +63,35 @@ class App extends React.Component {
             console.log('addPerson')
             console.log(event.target)
 
-            if (this.state.persons.filter(person => (person.name.toLowerCase() === this.state.newName.toLowerCase())).length > 0) {
+            let index = this.state.persons.findIndex(person => {
+                return person.name.toLowerCase() === this.state.newName.toLowerCase()
+            })
+
+            console.log(index)
+
+            if (index > -1) {
                 console.log("nimi on jo luettelossa: ", this.state.newName)
-                alert("Nimi on jo luettelossa")
-                return
+                const result = window.confirm(this.state.persons[index].name + ' on jo luettelossa, korvataanko vanha numero uudella?');
+                if (result) {
+                    const persons = [...this.state.persons]
+                    persons[index].number = this.state.newNumber
+                    personService
+                        .update(persons[index].id, persons[index])
+                        .then(response => {
+                            this.setState({persons, newName: '', newNumber: ''})
+                    })
+                }
+                else
+                    return
+            } else {
+                const newPerson = {name: this.state.newName, number: this.state.newNumber, id: guid()}
+                personService
+                    .create(newPerson)
+                    .then(response => {
+                        const persons = this.state.persons.concat(newPerson)
+                        this.setState({persons, newName: '', newNumber: ''})
+                    })
             }
-            const newPerson = {name: this.state.newName, number: this.state.newNumber, id: guid()}
-            personService
-                .create(newPerson)
-                .then(response => {
-                    const persons = this.state.persons.concat(newPerson)
-                    this.setState({persons, newName: '', newNumber: ''})
-                })
         }
         return handler
     }
@@ -122,49 +139,77 @@ class App extends React.Component {
 const AddPerson =({nameChangeHandler, numberChangeHandler, addPerson, newName, newNumber}) => {
     return(
         <form onSubmit={addPerson()}>
-            <div>
-                nimi: <input
-                onChange={nameChangeHandler()}
-                value = {newName}
-            />
-                <div>
-                    numero: <input
-                    onChange = {numberChangeHandler()}
-                    value = {newNumber}
-                />
-                </div>
-            </div>
-            <div>
-                <button type="submit" disabled={!newName||!newNumber}>lisää</button>
-            </div>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        nimi:
+                    </td>
+                    <td>
+                        <input
+                        onChange={nameChangeHandler()}
+                        value = {newName}
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        numero:
+                    </td>
+                    <td>
+                        <input
+                            onChange = {numberChangeHandler()}
+                            value = {newNumber}
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="submit" disabled={!newName||!newNumber}>lisää</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </form>
     )
 }
 
 const Filter = ({filter, handler}) => {
     return (
-        <div>
-            rajaa näytettäviä <input
-            onChange={handler()}
-            value={filter}
-        />
-        </div>
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        rajaa näytettäviä
+                    </td>
+                    <td>
+                        <input
+                        onChange={handler()}
+                        value={filter}/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     )
 }
 
 
 const Persons = ({persons, filter, deleteHandler}) => {
     const filtered = [...persons.filter(person => (person.name.toLowerCase().includes(filter.toLowerCase())))]
+    const tdStyle = {
+        'textAlign' : 'left',
+        padding : "8px"
+    }
     const personList =  filtered.length === 0 ? <tr><td>ei nimiä</td></tr> :
-
         filtered.map(person => (<tr key={person.id}>
-                <td>{person.name} </td>
-                <td>{person.number} </td>
-                <td>
+                <td style={tdStyle}>{person.name} </td>
+                <td style={tdStyle}>{person.number} </td>
+                <td style={tdStyle}>
                     <button onClick={deleteHandler(person.id)}>Poista</button>
                 </td>
             </tr>)
         )
+
     return (<table><tbody>{personList}</tbody></table>)
 
 }
