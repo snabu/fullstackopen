@@ -16,6 +16,7 @@ class App extends React.Component {
         this.addPerson = this.addPerson.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
         this.handleNumberChange = this.handleNumberChange.bind(this)
+        this.deleteHandler = this.deleteHandler.bind(this)
     }
 
     componentWillMount() {
@@ -27,7 +28,25 @@ class App extends React.Component {
             })
     }
 
-
+    deleteHandler = (id) => {
+        const handler = (event) => {
+            console.log("deleteHandler, id is ", id)
+            const persons = [...this.state.persons]
+            let index = persons.findIndex(function(person, index) {
+                return person.id === id
+            }, id)
+            const result = window.confirm("Poistetaanko " + persons[index].name + '?');
+            if (result) {
+                personService.remove(id)
+                    .then(response => {
+                        console.log('response received')
+                        persons.splice(index, 1)
+                        this.setState({persons, newName: '', newNumber: ''})
+                    })
+            }
+        }
+        return handler
+    }
 
     addPerson = (event) => {
         const handler = (event) => {
@@ -94,7 +113,7 @@ class App extends React.Component {
                 <AddPerson nameChangeHandler = {this.handleNameChange} numberChangeHandler = {this.handleNumberChange}
                            addPerson = {this.addPerson} newName = {this.state.newName} newNumber = {this.state.newNumber}/>
                 <h2>Numerot</h2>
-                <Persons persons = {this.state.persons} filter ={this.state.filter}/>
+                <Persons persons = {this.state.persons} filter ={this.state.filter} deleteHandler = {this.deleteHandler}/>
             </div>
         )
     }
@@ -134,9 +153,20 @@ const Filter = ({filter, handler}) => {
 }
 
 
-const Persons = ({persons, filter}) => {
-    const filtered = [...persons.filter(person => (person.name.toLowerCase().startsWith(filter)))]
-    return (filtered.length === 0 ? <p>ei nimiä</p> : filtered.map(person => <p key={person.id}>{person.name} {person.number}</p>))
+const Persons = ({persons, filter, deleteHandler}) => {
+    const filtered = [...persons.filter(person => (person.name.toLowerCase().includes(filter.toLowerCase())))]
+    const personList =  filtered.length === 0 ? <tr><td>ei nimiä</td></tr> :
+
+        filtered.map(person => (<tr key={person.id}>
+                <td>{person.name} </td>
+                <td>{person.number} </td>
+                <td>
+                    <button onClick={deleteHandler(person.id)}>Poista</button>
+                </td>
+            </tr>)
+        )
+    return (<table><tbody>{personList}</tbody></table>)
+
 }
 
 export default App
