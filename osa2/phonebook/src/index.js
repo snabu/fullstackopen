@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import personService from './services/persons';
+import './index.css'
 
 class App extends React.Component {
     constructor(props) {
@@ -9,7 +10,8 @@ class App extends React.Component {
             persons: [],
             newName: '',
             newNumber: '',
-            filter: ''
+            filter: '',
+            notification : null
         }
 
         this.handleFilterChange = this.handleFilterChange.bind(this)
@@ -40,8 +42,12 @@ class App extends React.Component {
                 personService.remove(id)
                     .then(response => {
                         console.log('response received')
+                        let name = persons[index].name
                         persons.splice(index, 1)
-                        this.setState({persons, newName: '', newNumber: ''})
+                        this.setState({persons, newName: '', newNumber: '', notification : 'Poistettiin ' + name})
+                        setTimeout(() => {
+                            this.setState({notification: null})
+                        }, 5000)
                     })
             }
         }
@@ -78,7 +84,10 @@ class App extends React.Component {
                     personService
                         .update(persons[index].id, persons[index])
                         .then(response => {
-                            this.setState({persons, newName: '', newNumber: ''})
+                            this.setState({persons, newName: '', newNumber: '', notification:  'Henkilön ' +persons[index].name + ' numerotiedot päivitetty'})
+                            setTimeout(() => {
+                              this.setState({notification: null})
+                              }, 5000)
                     })
                 }
                 else
@@ -89,7 +98,11 @@ class App extends React.Component {
                     .create(newPerson)
                     .then(response => {
                         const persons = this.state.persons.concat(newPerson)
-                        this.setState({persons, newName: '', newNumber: ''})
+                        this.setState({persons, newName: '', newNumber: '', notification: "Lisättiin " + newPerson.name})
+                        setTimeout(() => {
+                            this.setState({notification: null})
+                            }, 5000)
+
                     })
             }
         }
@@ -126,9 +139,11 @@ class App extends React.Component {
         return (
             <div>
                 <h2>Puhelinluettelo</h2>
+                <Notification message={this.state.notification}/>
                 <Filter handler = {this.handleFilterChange} filter = {this.state.filter}/>
                 <AddPerson nameChangeHandler = {this.handleNameChange} numberChangeHandler = {this.handleNumberChange}
-                           addPerson = {this.addPerson} newName = {this.state.newName} newNumber = {this.state.newNumber}/>
+                           addPerson = {this.addPerson} newName = {this.state.newName} newNumber = {this.state.newNumber}
+                             />
                 <h2>Numerot</h2>
                 <Persons persons = {this.state.persons} filter ={this.state.filter} deleteHandler = {this.deleteHandler}/>
             </div>
@@ -138,6 +153,7 @@ class App extends React.Component {
 
 const AddPerson =({nameChangeHandler, numberChangeHandler, addPerson, newName, newNumber}) => {
     return(
+
         <form onSubmit={addPerson()}>
             <table>
                 <tbody>
@@ -196,15 +212,11 @@ const Filter = ({filter, handler}) => {
 
 const Persons = ({persons, filter, deleteHandler}) => {
     const filtered = [...persons.filter(person => (person.name.toLowerCase().includes(filter.toLowerCase())))]
-    const tdStyle = {
-        'textAlign' : 'left',
-        padding : "8px"
-    }
     const personList =  filtered.length === 0 ? <tr><td>ei nimiä</td></tr> :
         filtered.map(person => (<tr key={person.id}>
-                <td style={tdStyle}>{person.name} </td>
-                <td style={tdStyle}>{person.number} </td>
-                <td style={tdStyle}>
+                <td>{person.name} </td>
+                <td>{person.number} </td>
+                <td>
                     <button onClick={deleteHandler(person.id)}>Poista</button>
                 </td>
             </tr>)
@@ -212,6 +224,18 @@ const Persons = ({persons, filter, deleteHandler}) => {
 
     return (<table><tbody>{personList}</tbody></table>)
 
+}
+
+
+const Notification = ({ message }) => {
+    if (message === null) {
+        return null
+    }
+    return (
+        <div className="notification">
+            {message}
+        </div>
+    )
 }
 
 export default App
