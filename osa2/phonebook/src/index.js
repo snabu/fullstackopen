@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import axios from 'axios'
+import personService from './services/persons';
 
 class App extends React.Component {
     constructor(props) {
@@ -20,8 +20,7 @@ class App extends React.Component {
 
     componentWillMount() {
         console.log('componentWillMount')
-        axios
-            .get('http://localhost:3001/persons')
+        personService.getAll()
             .then(response => {
                 console.log('response received')
                 this.setState({ persons: response.data })
@@ -51,8 +50,8 @@ class App extends React.Component {
                 return
             }
             const newPerson = {name: this.state.newName, number: this.state.newNumber, id: guid()}
-            axios
-                .post('http://localhost:3001/persons', newPerson)
+            personService
+                .create(newPerson)
                 .then(response => {
                     const persons = this.state.persons.concat(newPerson)
                     this.setState({persons, newName: '', newNumber: ''})
