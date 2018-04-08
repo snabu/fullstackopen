@@ -11,7 +11,7 @@ class App extends React.Component{
         }
 
         this.handleFilterChange = this.handleFilterChange.bind(this)
-
+        this.countryClickedHandler = this.countryClickedHandler.bind(this)
     }
 
     componentWillMount() {
@@ -22,6 +22,14 @@ class App extends React.Component{
                 console.log('response received')
                 this.setState({ countries: response.data })
             })
+    }
+
+    countryClickedHandler = (event) => {
+        const handler = (event) =>{
+            console.log("in countryClickedHandler, target id is ", event.target.id)
+            this.setState({filter: event.target.id})
+        }
+        return handler
     }
     handleFilterChange = (event) => {
         const handler = (event) =>{
@@ -35,7 +43,7 @@ class App extends React.Component{
         return (
             <div>
                 <Filter handler = {this.handleFilterChange} filter = {this.state.filter}/>
-                <Countries countries = {this.state.countries} filter = {this.state.filter}/>
+                <Countries countries = {this.state.countries} filter = {this.state.filter} countryClickedHandler = {this.countryClickedHandler}/>
             </div>
         )
     }
@@ -43,18 +51,19 @@ class App extends React.Component{
 
 }
 
-const Countries  = ({countries, filter}) => {
-    const filteredCountries = [...countries.filter(country => (country.name.toLowerCase().includes(filter)))]
+const Countries  = ({countries, filter, countryClickedHandler}) => {
+    const filteredCountries = [...countries.filter(country => (country.name.toLowerCase().includes(filter.toLowerCase())))]
     console.log("number of filtered countries ", filteredCountries.length)
     return (
         filteredCountries.length > 10 ? <p>too many matches, specify another filter</p> :
-            filteredCountries.length === 1 ? <Country country ={filteredCountries[0]}/> : <CountryList countries = {filteredCountries}/>
+            filteredCountries.length === 1 ? <Country country ={filteredCountries[0]}/> : <CountryList countries = {filteredCountries}
+                                                                                                       countryClickedHandler = {countryClickedHandler}/>
     )
 }
 
-const CountryList = ({countries}) => {
+const CountryList = ({countries, countryClickedHandler}) => {
     return (
-        countries.map(country => <p>{country.name}</p>)
+        countries.map(country => <div id = {country.name} onClick={countryClickedHandler()} key={country.alpha2Code}>{country.name}</div>)
     )
 }
 
@@ -74,7 +83,7 @@ const Filter = ({filter, handler}) => {
     return (
         <div>
             find countries <input
-            onChange={handler()}
+            onChange={handler(this)}
             value={filter}
         />
         </div>
