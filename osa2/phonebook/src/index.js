@@ -88,7 +88,22 @@ class App extends React.Component {
                             setTimeout(() => {
                               this.setState({notification: null})
                               }, 5000)
+
                     })
+                        .catch(error => {
+                          if (error.response.status === 404) {
+                              //Item was removed from the server, create new and update locally
+                              personService
+                                  .create(persons[index])
+                                  .then(response => {
+                                      this.setState({persons, newName: '', newNumber: '', notification:  'Henkilön ' +persons[index].name + ' numerotiedot päivitetty'})
+                                      setTimeout(() => {
+                                          this.setState({notification: null})
+                                      }, 5000)
+
+                                  })
+                          }
+                        })
                 }
                 else
                     return
