@@ -72,7 +72,7 @@ const MostVoted = (votes) => {
     points.sort(compare)
     return (
         <div>
-            <h1>anecdote with most votes</h1>
+            <h1>anecdote with   most votes</h1>
             <p>{anecdotes[points[points.length -1].anectode]}</p>
             <HasVotes count={points[points.length -1].count}/>
         </div>

@@ -56,6 +56,7 @@ class App extends React.Component {
 
     addPerson = (event) => {
         const handler = (event) => {
+            /*
             const guid = () => {
                 const s4 = () => {
                     return Math.floor((1 + Math.random()) * 0x10000)
@@ -64,7 +65,7 @@ class App extends React.Component {
                 }
                 return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
             }
-
+            */
             event.preventDefault()
             console.log('addPerson')
             console.log(event.target)
@@ -108,10 +109,12 @@ class App extends React.Component {
                 else
                     return
             } else {
-                const newPerson = {name: this.state.newName, number: this.state.newNumber, id: guid()}
+                const tmpPerson = {name: this.state.newName, number: this.state.newNumber}
                 personService
-                    .create(newPerson)
+                    .create(tmpPerson)
                     .then(response => {
+                        console.log(response.data)
+                        const newPerson = response.data
                         const persons = this.state.persons.concat(newPerson)
                         this.setState({persons, newName: '', newNumber: '', notification: "Lisättiin " + newPerson.name})
                         setTimeout(() => {
