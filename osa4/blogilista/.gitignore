@@ -4,7 +4,7 @@
 /node_modules
 
 # IntelliJ
-/.idea
+/.idea/*
 *.iml
 
 # testing
