@@ -1,0 +1,21 @@
+{
+  "name": "blogilista",
+  "version": "1.0.0",
+  "description": "Fullstack open part 4",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.4",
+    "http": "0.0.0",
+    "mongoose": "^5.3.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon index.js",
+    "debug": "nodemon --inspect index.js"
+  },
+  "author": "STu",
+  "license": "ISC"
+}
