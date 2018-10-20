@@ -10,11 +10,18 @@
     "http": "0.0.0",
     "mongoose": "^5.3.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^5.7.0",
+    "jest": "^23.6.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "watch": "nodemon index.js",
-    "debug": "nodemon --inspect index.js"
+    "debug": "nodemon --inspect index.js",
+    "lint": "eslint ."
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "author": "STu",
   "license": "ISC"
