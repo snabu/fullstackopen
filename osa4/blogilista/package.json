@@ -6,18 +6,21 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
+    "dotenv": "^6.1.0",
     "express": "^4.16.4",
     "http": "0.0.0",
     "mongoose": "^5.3.4"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "eslint": "^5.7.0",
     "jest": "^23.6.0"
   },
   "scripts": {
-    "test": "jest --verbose",
-    "watch": "nodemon index.js",
-    "debug": "nodemon --inspect index.js",
+    "start" : "cross-env NODE_ENV=production node index.js",
+    "test": "cross-env NODE_ENV=test jest --verbose",
+    "watch": "cross-env NODE_ENV=development nodemon index.js",
+    "debug": "cross-env NODE_ENV=development nodemon --inspect index.js",
     "lint": "eslint ."
   },
   "jest": {
