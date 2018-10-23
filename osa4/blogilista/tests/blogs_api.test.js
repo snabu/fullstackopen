@@ -84,6 +84,23 @@ test('a specific blog is within the returned blogs', async () => {
     expect(titles).toContain(initialBlogs[2].title)
 })
 
+test('blog is addedd to db', async () => {
+    let testBlog = {
+        title: "Blaah blaah blaah",
+        author: "Mr Bla bla",
+        url: "http://dev.null/blaablaa",
+        likes: 25
+    }
+
+    let testEntry = new Blog(testBlog)
+    await testEntry.save()
+
+    const response = await api
+        .get('/api/blogs')
+    const titles = response.body.map(r => r.title)
+    expect(titles).toContain(testEntry.title)
+})
+
 afterAll(() => {
     server.close()
 })

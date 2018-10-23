@@ -7,7 +7,8 @@ const formatBlog = (blog) => {
         id: blog._id,
         author: blog.author,
         title: blog.title,
-        url: blog.url
+        url: blog.url,
+        likes: blog.likes
     }
 }
 
@@ -16,14 +17,10 @@ blogsRouter.get('/', async (request, response) => {
     response.json(blogs.map(formatBlog))
 })
 
-blogsRouter.post('/', (request, response) => {
+blogsRouter.post('/', async (request, response) => {
     const blog = new Blog(request.body)
-
-    blog
-        .save()
-        .then(result => {
-            response.status(201).json(result)
-        })
+    const result = await blog.save()
+    response.status(201).json(result)
 })
 
 module.exports = blogsRouter
