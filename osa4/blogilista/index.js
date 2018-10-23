@@ -14,7 +14,6 @@ app.use(bodyParser.json())
 app.use('/api/blogs', blogsRouter)
 
 
-console.log(config.mongoUrl)
 mongoose
     .connect(config.mongoUrl)
     .then( () => {

@@ -14,10 +14,11 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "eslint": "^5.7.0",
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "supertest": "^3.3.0"
   },
   "scripts": {
-    "start" : "cross-env NODE_ENV=production node index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
     "test": "cross-env NODE_ENV=test jest --verbose",
     "watch": "cross-env NODE_ENV=development nodemon index.js",
     "debug": "cross-env NODE_ENV=development nodemon --inspect index.js",
