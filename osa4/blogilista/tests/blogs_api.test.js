@@ -92,6 +92,7 @@ test('blog is addedd to db', async () => {
         likes: 25
     }
 
+
     let testEntry = new Blog(testBlog)
     await testEntry.save()
 
@@ -99,6 +100,23 @@ test('blog is addedd to db', async () => {
         .get('/api/blogs')
     const titles = response.body.map(r => r.title)
     expect(titles).toContain(testEntry.title)
+})
+
+test('likes set to zero if value omitted', async () => {
+    let testBlog = {
+        title: "Jada jada blaah",
+        author: "Mr Bla bla",
+        url: "http://dev.null/jadajada"
+    }
+
+    const countBefore = await Blog.count({})
+
+    let testEntry = new Blog(testBlog)
+    await testEntry.save()
+
+    const response = await api
+        .get('/api/blogs')
+    expect(response.body[countBefore].likes).toBe(0)
 })
 
 afterAll(() => {
