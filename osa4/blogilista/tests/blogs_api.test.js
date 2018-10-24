@@ -152,6 +152,33 @@ test('Bad request (HTTP status code 400) if no url', async () => {
 })
 
 
+test('a blog can be deleted', async () => {
+    let testBlog = {
+        title : "ha ha ha haa, delete rules",
+        author: "Mr Bla bla",
+        url : "http://example.com/hahaha"
+    }
+
+    const addedBlog = await api
+        .post('/api/blogs')
+        .send(testBlog)
+
+    const blogsAtBeginningOfOperation = await api
+        .get('/api/blogs')
+
+    await api
+        .delete(`/api/blogs/${addedBlog.body.id}`)
+        .expect(204)
+
+    const blogsAfterDelete = await api
+        .get('/api/blogs')
+
+    const titles = blogsAfterDelete.body.map(r => r.title)
+
+    expect(titles).not.toContain(testBlog.title)
+    expect(blogsAfterDelete.body.length).toBe(blogsAtBeginningOfOperation.body.length - 1)
+})
+
 
 afterAll(() => {
     server.close()

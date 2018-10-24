@@ -24,8 +24,24 @@ blogsRouter.post('/', async (request, response) => {
         return response.status(400).json({error : 'url missing'})
     let entry = request.body
     const blog = new Blog(entry)
-    const result = await blog.save()
-    response.status(201).json(result)
+    try {
+        const result = await blog.save()
+        response.status(201).json(formatBlog(blog))
+    } catch (exception) {
+        console.log(exception)
+        response.status(500).send({ error: 'error' })
+    }
+})
+
+blogsRouter.delete('/:id', async (request, response) => {
+    try {
+        await Blog.findByIdAndRemove(request.params.id)
+
+        response.status(204).end()
+    } catch (exception) {
+        console.log(exception)
+        response.status(400).send({ error: 'malformatted id' })
+    }
 })
 
 module.exports = blogsRouter
