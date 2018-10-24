@@ -119,6 +119,40 @@ test('likes set to zero if value omitted', async () => {
     expect(response.body[countBefore].likes).toBe(0)
 })
 
+test('Bad request (HTTP status code 400) if no title', async () => {
+    let testBlog = {
+        author: "Mr Bla bla",
+        url: "http://dev.null/jadajada"
+    }
+
+
+    let testEntry = new Blog(testBlog)
+    let response = await api
+        .post('/api/blogs')
+        .send(testEntry)
+        .expect(400)
+
+    console.log(response)
+
+})
+
+test('Bad request (HTTP status code 400) if no url', async () => {
+    let testBlog = {
+        title : "ha ha ha haa",
+        author: "Mr Bla bla"
+    }
+
+
+    let testEntry = new Blog(testBlog)
+    let response = await api
+        .post('/api/blogs')
+        .send(testEntry)
+        .expect(400)
+    console.log(response)
+})
+
+
+
 afterAll(() => {
     server.close()
 })
