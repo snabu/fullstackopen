@@ -132,7 +132,6 @@ test('Bad request (HTTP status code 400) if no title', async () => {
         .send(testEntry)
         .expect(400)
 
-    console.log(response)
 
 })
 
@@ -148,7 +147,7 @@ test('Bad request (HTTP status code 400) if no url', async () => {
         .post('/api/blogs')
         .send(testEntry)
         .expect(400)
-    console.log(response)
+
 })
 
 
@@ -156,7 +155,8 @@ test('a blog can be deleted', async () => {
     let testBlog = {
         title : "ha ha ha haa, delete rules",
         author: "Mr Bla bla",
-        url : "http://example.com/hahaha"
+        url : "http://example.com/hahaha",
+        likes : 10
     }
 
     const addedBlog = await api
@@ -179,6 +179,33 @@ test('a blog can be deleted', async () => {
     expect(blogsAfterDelete.body.length).toBe(blogsAtBeginningOfOperation.body.length - 1)
 })
 
+
+test('a blog can be updated', async () => {
+    let testBlog = {
+        title : "a blog can be updated",
+        author: "Mr Bla bla",
+        url : "http://example.com/hahaha",
+        likes : 20
+    }
+
+    const addedBlog = await api
+        .post('/api/blogs')
+        .send(testBlog)
+
+    const modifiedBlog =  {
+        title : addedBlog.body.title,
+        author : addedBlog.body.author,
+        url : addedBlog.body.url,
+        likes : 30,
+        id : addedBlog.body.id
+    }
+    const result = await api
+       .put('/api/blogs/' + addedBlog.body.id)
+       .send(modifiedBlog)
+
+    expect(result.body.likes).toBe(30)
+    expect(result.body.id).toBe(addedBlog.body.id)
+})
 
 afterAll(() => {
     server.close()

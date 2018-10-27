@@ -44,4 +44,29 @@ blogsRouter.delete('/:id', async (request, response) => {
     }
 })
 
+blogsRouter.put('/:id', async (request, response) => {
+
+
+    if (!request.body.title || !request.body.author ||!request.body.url || !request.body.likes) {
+        return response.status(400).send({error : 'Missing parameters'})
+    }
+
+    const blog = {
+        title: request.body.title,
+        author: request.body.author,
+        url: request.body.url,
+        likes : request.body.likes
+    }
+
+    await Blog
+        .findByIdAndUpdate(request.params.id, blog, { new: true } )
+        .then(updatedBlog => {
+            response.json(formatBlog(updatedBlog))
+        })
+        .catch(error => {
+            console.log(error)
+            response.status(400).send({ error: 'malformatted id' })
+        })
+})
+
 module.exports = blogsRouter
