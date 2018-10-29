@@ -1,20 +1,13 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const mongoose = require('mongoose')
 
 
-const formatBlog = (blog) => {
-    return {
-        id: blog._id,
-        author: blog.author,
-        title: blog.title,
-        url: blog.url,
-        likes: blog.likes
-    }
-}
+
 
 blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({})
-    response.json(blogs.map(formatBlog))
+    response.json(blogs.map(Blog.format))
 })
 
 blogsRouter.post('/', async (request, response) => {
@@ -26,7 +19,7 @@ blogsRouter.post('/', async (request, response) => {
     const blog = new Blog(entry)
     try {
         const result = await blog.save()
-        response.status(201).json(formatBlog(blog))
+        response.status(201).json(Blog.format(result))
     } catch (exception) {
         console.log(exception)
         response.status(500).send({ error: 'error' })
@@ -35,6 +28,7 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
     try {
+        console.log("id is: ", request.params.id)
         await Blog.findByIdAndRemove(request.params.id)
 
         response.status(204).end()
@@ -61,7 +55,7 @@ blogsRouter.put('/:id', async (request, response) => {
     await Blog
         .findByIdAndUpdate(request.params.id, blog, { new: true } )
         .then(updatedBlog => {
-            response.json(formatBlog(updatedBlog))
+            response.json(Blog.format(updatedBlog))
         })
         .catch(error => {
             console.log(error)
