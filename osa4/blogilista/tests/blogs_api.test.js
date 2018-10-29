@@ -3,6 +3,9 @@ const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
 
+const User = require('../models/user')
+const {usersInDb} = require('./test_helper')
+
 const initialBlogs = [
     {
         _id: "5a422a851b54a676234d17f7",
@@ -205,6 +208,77 @@ test('a blog can be updated', async () => {
 
     expect(result.body.likes).toBe(30)
     expect(result.body.id).toBe(addedBlog.body.id)
+})
+
+describe('when there is initially one user at db', async () => {
+    beforeAll(async () => {
+        await User.remove({})
+        const user = new User({ username: 'firstuser', name : 'First User', password: 'randompwd', adult : true })
+        await user.save()
+    })
+
+
+
+    test('POST /api/users succeeds with a fresh username', async () => {
+        const usersBeforeOperation = await usersInDb()
+
+        const newUser = {
+            username: 'testuser',
+            name: 'Test User',
+            password: 'testpwd',
+            adult : true
+        }
+
+        await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const usersAfterOperation = await usersInDb()
+        expect(usersAfterOperation.length).toBe(usersBeforeOperation.length+1)
+        const usernames = usersAfterOperation.map(u=>u.username)
+        expect(usernames).toContain(newUser.username)
+    })
+
+    test('POST /api/users returns 400 if password too short', async () => {
+        const newUser = {
+            username: 'testuser',
+            name: 'Test User',
+            password: '12',
+            adult : true
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+        expect(result.body).toEqual({"error" : "Password too short, must be at least 3 characters"})
+    })
+
+    test('POST /api/users returns 400 if username already in use', async () => {
+        const newUser = {
+            username: 'testuser2',
+            name: 'Test User',
+            password: '1234',
+            adult : true
+        }
+        //should go OK
+        await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(200)
+        //should fail
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        expect(result.body).toEqual({"error": "user with username testuser2 already exists"})
+
+    })
 })
 
 afterAll(() => {
