@@ -211,13 +211,24 @@ test('a blog can be updated', async () => {
 })
 
 describe('when there is initially one user at db', async () => {
+
+    const initialUsers = [
+        { username: 'firstuser', name : 'First User', password: 'randompwd', adult : true }
+        ]
+
     beforeAll(async () => {
         await User.remove({})
-        const user = new User({ username: 'firstuser', name : 'First User', password: 'randompwd', adult : true })
-        await user.save()
+        const users = initialUsers.map(user => new User(user))
+        const promiseArray = users.map(user => user.save())
+        await Promise.all(promiseArray)
     })
 
-
+    test('Get user list', async  () => {
+        result = await api
+            .get('/api/users')
+            .expect(200)
+        expect(result.body.length).toBe(initialUsers.length)
+    })
 
     test('POST /api/users succeeds with a fresh username', async () => {
         const usersBeforeOperation = await usersInDb()

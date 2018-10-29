@@ -264,7 +264,6 @@ describe('Most blog', () => {
 
         let expectedResult = { author: 'Robert C. Martin', blogs: 3 }
         const result = listHelper.mostBlogs(blogs)
-        console.log(result)
         expect (result).toEqual(expectedResult)
     })
 })
